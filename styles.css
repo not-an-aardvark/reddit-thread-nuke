@@ -1,0 +1,70 @@
+﻿* {
+	margin: 0;
+}
+
+body {
+	font-family: sans-serif;
+	background-color: #eee;
+}
+
+.box {
+	margin: 20px auto;
+	padding: 20px;
+	width: 800px;
+	box-shadow: 0 1px 3px 1px #bbb;
+	background-color: #fff;
+}
+
+h2 {
+	padding-bottom: 20px;
+}
+
+p {
+	padding: 5px 0;
+}
+
+#thread-url-box {
+	width: 600px;
+	margin: 0 auto;
+}
+
+#loading-message, #done-message {
+	display: none;
+}
+
+#url-error-message, #error-output {
+	color: #f00;
+	font-weight: 700;
+	margin-top: 5px;
+	display: none;
+}
+
+.submit {
+	margin-top: 10px;
+	padding: 10px 20px;
+	border: 0;
+	border-radius: 2px;
+	text-transform: uppercase;
+	background-color: #0077ff;
+	color: #fff;
+}
+	.submit:hover {
+		cursor: pointer;
+		background-color: #000;
+		box-shadow: 0 1px 3px 1px #bbb;
+	}
+
+
+
+#snapshot {
+	width: 100%;
+	height: 600px;
+}
+
+#lite-checkbox {
+	margin: 5px
+}
+
+#output-box {
+	display: none;
+}

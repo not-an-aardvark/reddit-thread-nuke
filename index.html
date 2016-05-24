@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Reddit thread nuke</title>
+<link rel="stylesheet" type="text/css" href="styles.css" />
+</head>
+
+<body>
+
+<div id="submit-box" class="box">
+ <h2>Reddit thread nuker</h2>
+ <p>This tool will "nuke" (i.e. remove all comments) on a given submission or comment chain.</p>
+
+ <p>Enter the URL of a reddit thread or comment chain:</p>
+ <input id="thread-url-box"></input>
+ <pre>
+   <code id="url-error-message"></code>
+ </pre>
+ <div id="url-error-message"></div>
+ <div>
+  <input type="checkbox" id="preserve-distinguished-checkbox" checked>
+    Preserve 'distinguished' moderator comments
+  </input>
+ </div>
+ <div>
+   <button id="submit-button" onclick="onSubmitClicked()" class="submit">Submit</button>
+ </div>
+ <p id="error-output">An unknown error occured. Check the dev console for more details.</p>
+ <p id="loading-message">nuking thread... <span id="removed-count">0</span> items removed</p>
+ <p id="done-message">done</p>
+</div>
+
+</body>
+
+<script src="https://not-an-aardvark.github.io/snoowrap/snoowrap.js"></script>
+<script src="nukeThread.js"></script>
+</html>
