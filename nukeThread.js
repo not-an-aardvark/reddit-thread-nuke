@@ -110,8 +110,10 @@ function nukeThread (url) {
     parsedUrl = parseUrl(url);
   } catch (err) {
     document.getElementById('url-error-message').innerHTML = err.message;
+    document.getElementById('url-error-message').style.display = 'block';
     throw err;
   }
+  document.getElementById('url-error-message').style.display = 'none';
   document.getElementById('error-output').style.display = 'none';
   document.getElementById('loading-message').style.display = 'block';
   document.getElementById('done-message').style.display = 'none';
