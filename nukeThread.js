@@ -65,11 +65,11 @@ function deepRemove (content, preserveDistinguished) {
   return Promise.all(Array.from(replies).map(reply => deepRemove(reply, preserveDistinguished)).concat([removeCurrentItem]));
 }
 
-function getAccessToken () {
+function getAccessToken (code) {
   if (accessTokenPromise) {
     return accessTokenPromise;
   }
-  accessTokenPromise = cookies.access_token
+  accessTokenPromise = cookies.access_token && !code
     ? Promise.resolve(cookies.access_token)
     : snoowrap.prototype.credentialed_client_request.call({
       user_agent: USER_AGENT,
@@ -78,7 +78,7 @@ function getAccessToken () {
     }, {
       method: 'post',
       url: 'https://www.reddit.com/api/v1/access_token',
-      form: {grant_type: 'authorization_code', code: query.code, redirect_uri: REDIRECT_URI}
+      form: {grant_type: 'authorization_code', code, redirect_uri: REDIRECT_URI}
     }).then(response => {
       if (!response.access_token) {
         throw new Error('Authentication failed');
@@ -144,10 +144,7 @@ function onSubmitClicked () {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (cookies.access_token || query.code) {
-    getAccessToken(query.code);
-  }
-  if (query.state) {
+  if (query.state && query.code) {
     const parsedState = JSON.parse(decodeURIComponent(query.state));
     const url = decodeURIComponent(parsedState.url);
     document.getElementById('thread-url-box').value = url;
