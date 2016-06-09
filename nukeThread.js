@@ -152,7 +152,3 @@ document.addEventListener('DOMContentLoaded', () => {
     nukeThread(url);
   }
 });
-
-if (location.protocol !== 'https:') {
-  location = `https:${location.href.substring(location.protocol.length)}`;
-}
