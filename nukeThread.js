@@ -58,7 +58,7 @@ function getExpandedContent (requester, urlMatches) {
 }
 
 function deepRemove (content, preserveDistinguished) {
-  const replies = content.constructor.name === 'Submission' ? content.comments : content.replies;
+  const replies = content.comments || content.replies;
   const removeCurrentItem = content.distinguished && preserveDistinguished || content.banned_by !== null
     ? Promise.resolve()
     : content.remove().tap(incrementCounter);
