@@ -46,7 +46,7 @@ const getAuthRedirect = state =>
 `;
 
 function parseUrl (url) {
-  const matches = url.match(/^(?:http(?:s?):\/\/)?(?:\w*\.)?reddit.com\/(?:r\/\w{1,21}\/)?comments\/(\w{1,10})(?:\/[\w\u00c0-\u017f]{1,100})?(?:\/(\w{1,10})|\/?)?(?:\?.*)?$/);
+  const matches = url.match(/^(?:http(?:s?):\/\/)?(?:\w*\.)?reddit\.com\/(?:r\/\w{1,21}\/)?comments\/(\w{1,10})(?:\/[^\/\?]{1,100})?(?:\/(\w{1,10})|\/?)?(?:\?.*)?$/);
   if (!matches) {
     throw new TypeError('Invalid URL. Please enter the URL of a reddit Submission or Comment.');
   }
