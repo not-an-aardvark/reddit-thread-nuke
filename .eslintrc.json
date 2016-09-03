@@ -68,7 +68,6 @@
     "no-useless-concat": 1,
     "no-useless-constructor": 1,
     "no-whitespace-before-property": 1,
-    "no-var": 1,
     "no-void": 2,
     "no-with": 2,
     "object-curly-spacing": 1,
@@ -78,10 +77,6 @@
       1,
       "never"
     ],
-    "prefer-arrow-callback": 1,
-    "prefer-const": 1,
-    "prefer-rest-params": 1,
-    "prefer-spread": 1,
     "quote-props": [
       1,
       "as-needed"

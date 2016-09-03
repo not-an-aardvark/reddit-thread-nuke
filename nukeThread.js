@@ -1,52 +1,46 @@
 'use strict';
 /* global snoowrap */
-const REDDIT_APP_ID = 'Nm8ORveyn95TYw';
-const REDIRECT_URI = 'https://not-an-aardvark.github.io/reddit-thread-nuke/';
+var REDDIT_APP_ID = 'Nm8ORveyn95TYw';
+var REDIRECT_URI = 'https://not-an-aardvark.github.io/reddit-thread-nuke/';
 
-const USER_AGENT = 'reddit thread nuke by /u/not_an_aardvark || https://github.com/not-an-aardvark/reddit-thread-nuke';
-const REQUIRED_SCOPES = ['modposts', 'read'];
-let cachedRequester;
-let accessTokenPromise;
-let removedCount;
+var USER_AGENT = 'reddit thread nuke by /u/not_an_aardvark || https://github.com/not-an-aardvark/reddit-thread-nuke';
+var REQUIRED_SCOPES = ['modposts', 'read'];
+var cachedRequester;
+var accessTokenPromise;
+var removedCount;
 
-const query = parseQueryString(location.search);
-const cookies = parseCookieString(document.cookie);
+var query = parseQueryString(location.search);
+var cookies = parseCookieString(document.cookie);
 
 function parseQueryString (str) {
   if (!str) {
     return {};
   }
-  const obj = {};
-  const pieces = str.slice(1).split('&');
-  for (let i = 0; i < pieces.length; i++) {
-    const pair = pieces[i].split('=');
+  var obj = {};
+  var pieces = str.slice(1).split('&');
+  for (var i = 0; i < pieces.length; i++) {
+    var pair = pieces[i].split('=');
     obj[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
   }
   return obj;
 }
 
 function parseCookieString (cookieString) {
-  const obj = {};
-  const splitCookies = cookieString.split('; ');
-  splitCookies.forEach(cookie => {
-    const pair = cookie.split('=');
+  var obj = {};
+  var splitCookies = cookieString.split('; ');
+  splitCookies.forEach(function (cookie) {
+    var pair = cookie.split('=');
     obj[pair[0]] = pair[1];
   });
   return obj;
 }
 
-const getAuthRedirect = state =>
-`https://reddit.com/api/v1/authorize
-?client_id=${REDDIT_APP_ID}
-&response_type=code
-&state=${encodeURIComponent(state)}
-&redirect_uri=${encodeURIComponent(REDIRECT_URI)}
-&duration=temporary
-&scope=${REQUIRED_SCOPES.join('%2C')}
-`;
+var getAuthRedirect = function (state) {
+  return `https://reddit.com/api/v1/authorize?client_id=${REDDIT_APP_ID}&response_type=code&state=${encodeURIComponent(state)}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&duration=temporary&scope=${REQUIRED_SCOPES.join('%2C')}`;
+};
 
 function parseUrl (url) {
-  const matches = url.match(/^(?:http(?:s?):\/\/)?(?:\w*\.)?reddit\.com\/(?:r\/\w{1,21}\/)?comments\/(\w{1,10})(?:\/[^\/\?]{1,100})?(?:\/(\w{1,10})|\/?)?(?:\?.*)?$/);
+  var matches = url.match(/^(?:http(?:s?):\/\/)?(?:\w*\.)?reddit\.com\/(?:r\/\w{1,21}\/)?comments\/(\w{1,10})(?:\/[^\/\?]{1,100})?(?:\/(\w{1,10})|\/?)?(?:\?.*)?$/);
   if (!matches) {
     throw new TypeError('Invalid URL. Please enter the URL of a reddit Submission or Comment.');
   }
@@ -58,11 +52,13 @@ function getExpandedContent (requester, urlMatches) {
 }
 
 function deepRemove (content, preserveDistinguished) {
-  const replies = content.comments || content.replies;
-  const removeCurrentItem = content.distinguished && preserveDistinguished || content.banned_by !== null
+  var replies = content.comments || content.replies;
+  var removeCurrentItem = content.distinguished && preserveDistinguished || content.banned_by !== null
     ? Promise.resolve()
     : content.remove().tap(incrementCounter);
-  return Promise.all(Array.from(replies).map(reply => deepRemove(reply, preserveDistinguished)).concat([removeCurrentItem]));
+  return Promise.all(Array.from(replies).map(function (reply) {
+    return deepRemove(reply, preserveDistinguished);
+  }).concat([removeCurrentItem]));
 }
 
 function getAccessToken (code) {
@@ -79,7 +75,7 @@ function getAccessToken (code) {
       method: 'post',
       url: 'https://www.reddit.com/api/v1/access_token',
       form: {grant_type: 'authorization_code', code, redirect_uri: REDIRECT_URI}
-    }).then(response => {
+    }).then(function (response) {
       if (!response.access_token) {
         throw new Error('Authentication failed');
       }
@@ -104,7 +100,7 @@ function getRequester (access_token) {
 }
 
 function nukeThread (url) {
-  let parsedUrl;
+  var parsedUrl;
   removedCount = 0;
   try {
     parsedUrl = parseUrl(url);
@@ -119,12 +115,14 @@ function nukeThread (url) {
   document.getElementById('done-message').style.display = 'none';
   return getAccessToken(query.code)
     .then(getRequester)
-    .then(r => getExpandedContent(r, parsedUrl))
-    .then(content => deepRemove(content, document.getElementById('preserve-distinguished-checkbox').checked))
-    .then(() => {
+    .then(function (r) {
+      return getExpandedContent(r, parsedUrl);
+    }).then(function (content) {
+      return deepRemove(content, document.getElementById('preserve-distinguished-checkbox').checked);
+    }).then(function () {
       document.getElementById('done-message').style.display = 'block';
     })
-    .catch(err => {
+    .catch(function (err) {
       document.getElementById('error-output').style.display = 'block';
       document.getElementById('loading-message').style.display = 'none';
       document.getElementById('done-message').style.display = 'none';
@@ -132,21 +130,19 @@ function nukeThread (url) {
     });
 }
 
-/* eslint-disable no-unused-vars */
-function onSubmitClicked () {
-  /* eslint-enable no-unused-vars */
-  const url = document.getElementById('thread-url-box').value;
-  const preserveDistinguished = document.getElementById('preserve-distinguished-checkbox').checked;
+function onSubmitClicked () { // eslint-disable-line no-unused-vars
+  var url = document.getElementById('thread-url-box').value;
+  var preserveDistinguished = document.getElementById('preserve-distinguished-checkbox').checked;
   if (cookies.access_token || query.code) {
     return nukeThread(url);
   }
   location = getAuthRedirect(JSON.stringify({url, preserveDistinguished}));
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function () {
   if (query.state && query.code) {
-    const parsedState = JSON.parse(decodeURIComponent(query.state));
-    const url = decodeURIComponent(parsedState.url);
+    var parsedState = JSON.parse(decodeURIComponent(query.state));
+    var url = decodeURIComponent(parsedState.url);
     document.getElementById('thread-url-box').value = url;
     document.getElementById('preserve-distinguished-checkbox').checked = parsedState.preserveDistinguished;
     nukeThread(url);
