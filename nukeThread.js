@@ -154,6 +154,14 @@ function nukeThread (url, toNuke) {
     });
 }
 
+function showHide() {
+  var selected = document.getElementById('to-nuke').value;
+  var distinguished = document.getElementById('distinguished-container');
+  var removed = document.getElementById('removed-container');
+  distinguished.style.display = selected == "nuke" ? "block" : "none";
+  removed.style.display = selected == "unnuke" ? "block" : "none"
+}
+
 function onSubmitClicked () { // eslint-disable-line no-unused-vars
   var url = document.getElementById('thread-url-box').value;
   var preserveDistinguished = document.getElementById('preserve-distinguished-checkbox').checked;

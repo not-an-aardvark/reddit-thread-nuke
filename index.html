@@ -18,15 +18,17 @@
    <code id="url-error-message"></code>
  </pre>
  <div id="url-error-message"></div>
- <div>
-  <input type="checkbox" id="preserve-distinguished-checkbox" checked>
+ <div id = "distinguished-container">
+  <input type="checkbox" id="preserve-distinguished-checkbox">
     Preserve 'distinguished' moderator comments
   </input>
-  <input type="checkbox" id="preserve-removed-checkbox" checked>
+ </div>
+ <div id = "removed-container" style = "display:none">
+  <input type="checkbox" id="preserve-removed-checkbox">
     Preserve comments removed by other moderators
   </input>
  </div>
- <select id = "to-nuke">
+ <select id="to-nuke" onchange="showHide()">
      <option value="nuke">Nuke</option>
      <option value="unnuke">Un-nuke</option>
  </select>
