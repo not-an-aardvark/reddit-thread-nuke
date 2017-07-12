@@ -4,10 +4,11 @@ var REDDIT_APP_ID = 'Nm8ORveyn95TYw';
 var REDIRECT_URI = 'https://not-an-aardvark.github.io/reddit-thread-nuke/';
 
 var USER_AGENT = 'reddit thread nuke by /u/not_an_aardvark || https://github.com/not-an-aardvark/reddit-thread-nuke';
-var REQUIRED_SCOPES = ['modposts', 'read'];
+var REQUIRED_SCOPES = ['modposts', 'read', 'identity'];
 var cachedRequester;
 var accessTokenPromise;
 var removedCount;
+var currentUser;
 
 var query = parseQueryString(location.search);
 var cookies = parseCookieString(document.cookie);
@@ -61,6 +62,21 @@ function deepRemove (content, preserveDistinguished) {
   }).concat([removeCurrentItem]));
 }
 
+function deepApprove (content, preserveRemoved) {
+  var replies = content.comments || content.replies;
+  var removeByOther = false;
+  if (content.banned_by !== null) {
+    removeByOther = content.banned_by['name'] !== currentUser;
+  }
+  var stayRemoved = preserveRemoved && removeByOther;
+  var approveCurrentItem = stayRemoved || content.banned_by === null
+    ? Promise.resolve()
+    : content.approve().tap(incrementCounter);
+  return Promise.all(Array.from(replies).map(function (reply) {
+    return deepApprove(reply, preserveRemoved);
+  }).concat([approveCurrentItem]));
+}
+
 function getAccessToken (code) {
   if (accessTokenPromise) {
     return accessTokenPromise;
@@ -99,7 +115,7 @@ function getRequester (access_token) {
   return cachedRequester;
 }
 
-function nukeThread (url) {
+function nukeThread (url, toNuke) {
   var parsedUrl;
   removedCount = 0;
   try {
@@ -116,9 +132,17 @@ function nukeThread (url) {
   return getAccessToken(query.code)
     .then(getRequester)
     .then(function (r) {
+      r.getMe().then( function(user) {
+          currentUser = user['name'];
+      });
       return getExpandedContent(r, parsedUrl);
     }).then(function (content) {
-      return deepRemove(content, document.getElementById('preserve-distinguished-checkbox').checked);
+      if (toNuke === "nuke") {
+        return deepRemove(content, document.getElementById('preserve-distinguished-checkbox').checked);
+      } else {
+        return deepApprove(content, document.getElementById('preserve-removed-checkbox').checked);
+      }
+
     }).then(function () {
       document.getElementById('done-message').style.display = 'block';
     })
@@ -133,8 +157,9 @@ function nukeThread (url) {
 function onSubmitClicked () { // eslint-disable-line no-unused-vars
   var url = document.getElementById('thread-url-box').value;
   var preserveDistinguished = document.getElementById('preserve-distinguished-checkbox').checked;
+  var toNuke = document.getElementById("to-nuke").value;
   if (cookies.access_token || query.code) {
-    return nukeThread(url);
+    return nukeThread(url, toNuke);
   }
   location = getAuthRedirect(JSON.stringify({url, preserveDistinguished}));
 }
@@ -145,6 +170,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var url = decodeURIComponent(parsedState.url);
     document.getElementById('thread-url-box').value = url;
     document.getElementById('preserve-distinguished-checkbox').checked = parsedState.preserveDistinguished;
-    nukeThread(url);
+    document.getElementById('preserve-removed-checkbox').checked = parsedState.preserveRemoved;
+    var toNuke = document.getElementById("to-nuke").value;
+    nukeThread(url, toNuke);
   }
 });

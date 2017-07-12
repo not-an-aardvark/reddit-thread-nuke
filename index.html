@@ -2,15 +2,15 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Reddit thread nuke</title>
+<title>Reddit thread nuke/unnuke</title>
 <link rel="stylesheet" type="text/css" href="styles.css" />
 </head>
 
 <body>
 
 <div id="submit-box" class="box">
- <h2>Reddit thread nuker</h2>
- <p>This tool will "nuke" (i.e. remove all comments) on a given submission or comment chain.</p>
+ <h2>Reddit thread nuker/unnuker</h2>
+ <p>This tool will "nuke" or "unnuke" (i.e. remove all comments or approve all comments) on a given submission or comment chain.</p>
 
  <p>Enter the URL of a reddit thread or comment chain:</p>
  <input id="thread-url-box"></input>
@@ -22,12 +22,19 @@
   <input type="checkbox" id="preserve-distinguished-checkbox" checked>
     Preserve 'distinguished' moderator comments
   </input>
+  <input type="checkbox" id="preserve-removed-checkbox" checked>
+    Preserve comments removed by other moderators
+  </input>
  </div>
+ <select id = "to-nuke">
+     <option value="nuke">Nuke</option>
+     <option value="unnuke">Un-nuke</option>
+ </select>
  <div>
    <button id="submit-button" onclick="onSubmitClicked()" class="submit">Submit</button>
  </div>
  <p id="error-output">An unknown error occured. Check the dev console for more details.</p>
- <p id="loading-message">nuking thread... <span id="removed-count">0</span> items removed</p>
+ <p id="loading-message">nuking/un-nuking thread... <span id="removed-count">0</span> items removed/approved</p>
  <p id="done-message">done</p>
 </div>
 
