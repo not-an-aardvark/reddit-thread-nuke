@@ -64,10 +64,10 @@ function deepRemove (content, preserveDistinguished) {
 function deepApprove (content, preserveRemoved, name) {
   var replies = content.comments || content.replies;
   var approveCurrentItem = !content.banned_by || preserveRemoved && content.banned_by.name !== name
-  ? Promise.resolve()
-  : content.approve().tap(incrementCounter);
+    ? Promise.resolve()
+    : content.approve().tap(incrementCounter);
   return Promise.all(Array.from(replies).map(function (reply) {
-    return deepApprove(reply, preserveRemoved);
+    return deepApprove(reply, preserveRemoved, name);
   }).concat([approveCurrentItem]));
 }
 
@@ -156,7 +156,7 @@ function showHide() {
 function onSubmitClicked () { // eslint-disable-line no-unused-vars
   var url = document.getElementById('thread-url-box').value;
   var preserveDistinguished = document.getElementById('preserve-distinguished-checkbox').checked;
-  var removeDistinguished = document.getElementById('preserve-removed-checkbox').checked;
+  var preserveRemoved = document.getElementById('preserve-removed-checkbox').checked;
   var toNuke = document.getElementById("to-nuke").value;
   if (cookies.access_token || query.code) {
     return nukeThread(url, toNuke);
