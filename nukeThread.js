@@ -190,3 +190,4 @@ document.addEventListener('DOMContentLoaded', function () {
     var toNuke = document.getElementById("to-nuke").value;
     nukeThread(url, toNuke);
   }
+}
