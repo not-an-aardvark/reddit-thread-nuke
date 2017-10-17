@@ -174,4 +174,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var toNuke = document.getElementById("to-nuke").value;
     nukeThread(url, toNuke);
   }
+<<<<<<< HEAD
 });
+=======
+}
+>>>>>>> 37e6114... fix redirect
