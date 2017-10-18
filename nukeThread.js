@@ -161,7 +161,7 @@ function onSubmitClicked () { // eslint-disable-line no-unused-vars
   if (cookies.access_token || query.code) {
     return nukeThread(url, toNuke);
   }
-  location = getAuthRedirect(JSON.stringify({url, preserveDistinguished, preserveRemoved}));
+  location = getAuthRedirect(JSON.stringify({url, preserveDistinguished, preserveRemoved, toNuke}));
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -171,11 +171,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('thread-url-box').value = url;
     document.getElementById('preserve-distinguished-checkbox').checked = parsedState.preserveDistinguished;
     document.getElementById('preserve-removed-checkbox').checked = parsedState.preserveRemoved;
+    document.getElementById("to-nuke").value = parsedState.toNuke;
     var toNuke = document.getElementById("to-nuke").value;
     nukeThread(url, toNuke);
   }
-<<<<<<< HEAD
 });
-=======
-}
->>>>>>> 37e6114... fix redirect
